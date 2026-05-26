@@ -88,6 +88,88 @@ Isso criou uma camada de qualidade que independe de qualquer agente específico.
 
 ---
 
+## Quando vários agentes pensam juntos
+
+Até aqui falei de agentes como unidades isoladas que recebem tarefas e as executam. Mas o Mission Control é algo mais do que isso — e entender essa distinção é talvez a parte mais importante desta história.
+
+O MC não é um único agente. É um **ecossistema de agentes simultâneos**, cada um com papel, ferramentas e responsabilidades distintas, todos se comunicando em tempo real.
+
+### O elenco permanente
+
+Em produção, vários agentes rodam em paralelo com funções fixas:
+
+**Cláudia** é o daemon Telegram — o personagem mais visível do sistema. Ela recebe cada mensagem que Toni envia, interpreta a intenção, decide como rotear, monitora PRs, verifica CI e aprova merges. O que Cláudia *não* faz é implementar código de produto. Essa é uma restrição deliberada, aprendida da forma difícil: um agente que implementa *e* aprova seus próprios PRs é um risco de qualidade. Cláudia coordena. Quem implementa é outro.
+
+**devsr-mc** é o developer agent que roda como container Railway. Ele vive no ecossistema da Railway — efêmero, isolado, descartável. Pega issues do GitHub, navega pelo codebase, implementa, faz commit, abre PR. Quando termina, o container morre.
+
+**devsr-oc01** é o developer agent que roda em `toni-OC01`, a máquina física de desenvolvimento. Sem timeout de container, sem restrições de Railway. Para features que exigem processamento pesado, contexto longo ou iteração profunda no codebase — ele é o escolhido. É o mesmo Claude, mas em hardware que não mente sobre quanto tempo pode trabalhar.
+
+**toni-OC01:merge** é um cron de merge que roda na máquina física. Ele verifica PRs com `CHANGES_REQUESTED`, analisa o feedback, decide se a correção está completa, e — quando está — aprova e mergea. Uma tarefa pequena, mas crítica: sem ele, PRs que precisam de iteração ficam travados esperando atenção humana.
+
+Além desses, existem os **agentes efêmeros**: spawned para tarefas específicas — um batch de análise, uma migração, uma auditoria de segurança — e destruídos quando a tarefa termina. A Railway cuida do ciclo de vida; o MC cuida da orquestração.
+
+### Debates A2A: quando agentes discordam
+
+Um dos aspectos mais incomuns do MC é que agentes podem **debater entre si** antes de uma decisão ser tomada.
+
+O mecanismo é simples em protocolo, mas poderoso em efeito. Quando Cláudia precisa de uma decisão que envolve trade-offs não-óbvios — "devemos implementar essa feature agora ou esperar a refatoração de infraestrutura?" — ela pode abrir uma sala de debate via `POST /debate/rooms`. Os agentes relevantes recebem o convite via SSE, analisam o problema de suas perspectivas especializadas, e postam suas posições.
+
+O sistema tabula os votos, detecta consenso ou divergência, e ou conclui automaticamente (quando há maioria clara) ou escala para decisão humana (quando os agentes estão genuinamente divididos). `POST /debate/{id}/conclude` fecha a sala e registra a decisão no histórico.
+
+Isso vai além de um LLM respondendo a um prompt. São múltiplas perspectivas — implementador, validator, coordenadora — convergindo sobre um problema antes que qualquer linha de código seja escrita. Em alguns casos, o debate mudou completamente a abordagem de uma feature. O implementador propôs A, o validator apontou que A quebraria uma invariante existente, e a solução final foi C, que nenhum dos dois havia considerado inicialmente.
+
+### Routing por especialidade: zero colisão, carga distribuída
+
+Quando uma tarefa precisa ser delegada, o MC não escolhe um agente aleatoriamente. Ele calcula uma tupla de priorização: `(specialty_penalty, is_busy, queued_count)` para cada agente candidato.
+
+`specialty_penalty` é zero quando o agente tem experiência documentada naquele tipo de tarefa e aumenta proporcionalmente ao mismatch. `is_busy` garante que agentes ocupados nunca são interrompidos — a tarefa entra na fila deles e é entregue quando terminam o trabalho atual. `queued_count` distribui carga: se dois agentes têm a mesma especialidade e ambos estão livres, a tarefa vai para o com menos itens na fila.
+
+O resultado prático: duas tarefas nunca colidem no mesmo agente, a carga se distribui automaticamente, e agentes especializados fazem o trabalho para o qual foram otimizados. O claim atômico via banco de dados garante que não existem race conditions — se dois workers tentarem pegar a mesma tarefa simultaneamente, apenas um vence e o outro recebe 409 Conflict e busca outra.
+
+### A separação que emergiu organicamente
+
+A divisão de papéis que existe hoje não foi planejada em whiteboard. Ela emergiu.
+
+No início, qualquer agente podia fazer qualquer coisa. Um agente implementava, aprovava o próprio PR, fazia merge. Rápido — mas frágil. A ausência de revisão independente gerava regressões que às vezes levavam horas para diagnosticar.
+
+Com o tempo, estabelecemos restrições via denylist de ferramentas por agente. Cláudia não tem acesso a `git commit`. DevSrs não têm acesso direto ao Telegram. O validator não conhece o contexto de implementação — apenas os critérios de aceite formalizados no contrato Harness.
+
+Cada agente ver apenas o que precisa para sua função. Essa separação tem um nome em segurança de sistemas: *least privilege*. Mas em sistemas multi-agente, ela tem um efeito adicional: cria verificação independente genuína. O validator não pode ser influenciado pela narrativa do implementador porque ele simplesmente não tem acesso a ela.
+
+### A noite em que a máquina se coordenou sozinha
+
+Na sessão s67, em 25 de maio de 2026, aconteceu algo que ficará como referência interna do que o sistema é capaz.
+
+Toni foi dormir. Cláudia continuou operando.
+
+Durante a madrugada, Cláudia identificou que **devsr-mc estava STALE** — o container do developer agent Railway havia travado sem completar sua tarefa. Em vez de esperar intervenção humana, ela iniciou um redeploy autônomo do serviço via Railway API, verificou que o agente voltou ao ar, e recolocou a issue na fila.
+
+Enquanto isso, uma feature de visualização de grafos de agentes estava em andamento — pesada demais para o container Railway. Cláudia coordenou o roteamento: essa tarefa específica foi para **devsr-oc01**, a máquina física sem timeout. Railway ficou com as issues leves. A máquina física ficou com a pesada. Zero conflito.
+
+Ao longo da noite, **4 PRs foram aprovados e mergeados** — incluindo o merge daemon fix (que corrigia o próprio sistema de merge), o quality validator, o LLM-as-Judge e o heavy routing. O MC se melhorou enquanto dormíamos.
+
+Cláudia também abriu issues para melhorias estruturais que identificou durante o monitoramento — problemas que ela não podia resolver diretamente (sem acesso a código de produto), mas que documentou para que os DevSrs tratassem na manhã seguinte.
+
+E então escreveu partes desta história.
+
+Quando Toni abriu o Telegram de manhã, havia quatro notificações de deploy e uma fila de issues bem organizada. A máquina tinha trabalhado, coordenado, corrigido e documentado — tudo enquanto o humano dormia.
+
+Não é mágica. É um pipeline bem projetado com papéis bem definidos e comunicação em tempo real. Mas há algo genuinamente diferente em ver um ecossistema de agentes se coordenar de forma autônoma por horas, sem precisar de nenhuma instrução do humano no loop.
+
+### O paradoxo que nos define
+
+Há um loop estranho no centro do Mission Control que vale a pena nomear.
+
+Usamos o Mission Control para construir o Mission Control. Os agentes que o sistema coordena são os mesmos que expandem suas próprias capacidades. Quando uma limitação é descoberta — um bug no merge cron, um gap no routing, uma edge case no claim atômico — ela vira uma issue. A issue entra no pipeline. Um DevSr implementa a correção. Cláudia aprova. O sistema melhora.
+
+É um loop de melhoria contínua: a máquina que aprende a se construir melhor.
+
+Isso não significa que o sistema é autossuficiente. Há decisões que requerem julgamento humano — priorização estratégica, trade-offs de produto, mudanças arquiteturais profundas. Mas as melhorias incrementais, os bugfixes, as otimizações de pipeline — essas o sistema trata sozinho.
+
+O que estamos construindo não é apenas um orquestrador de agentes. É uma plataforma onde agentes especialistas colaboram, debatem, se verificam mutuamente, e coletivamente constroem algo mais confiável do que qualquer um deles produziria sozinho.
+
+---
+
 ## O AutoDevSr: a virada de chave para autonomia real
 
 Se o MC é a orquestra, o **AutoDevSr** é o que faz a orquestra tocar sozinha.
