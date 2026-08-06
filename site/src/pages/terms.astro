@@ -1,0 +1,34 @@
+---
+import Base from "../layouts/Base.astro";
+const title = "Termos de uso — ZionCompanyAI";
+const description = "Termos de uso do site institucional da ZionCompanyAI, fábrica de software agêntica do Grupo MBZSoluções.";
+---
+<Base title={title} description={description} path="/terms/">
+  <article class="legal wrap">
+    <p class="kicker">Legal</p>
+    <h1>Termos de uso</h1>
+    <p>
+      Este site é a vitrine pública da ZionCompanyAI, a fábrica de software agêntica do
+      Grupo MBZSoluções. O conteúdo publicado aqui — textos, artigos e descrições de
+      produto — é de propriedade do Grupo MBZSoluções e pode ser referenciado com
+      atribuição.
+    </p>
+    <p>
+      O código-fonte dos produtos do portfólio é privado. Este site descreve o que
+      construímos e como trabalhamos, sem expor dados sensíveis de clientes ou
+      infraestrutura interna.
+    </p>
+    <p>
+      Cada produto do portfólio (ZionEcho, ZSocialMedia/PULSE, ZdailyScan, ZVideo,
+      MLPublishPro, PicSyncPro, ParadigmaBot) tem seus próprios termos de uso,
+      disponíveis nos respectivos domínios.
+    </p>
+    <p>
+      Dúvidas sobre estes termos: <a href="mailto:contato@mbzsolucoes.com.br">contato@mbzsolucoes.com.br</a>.
+    </p>
+  </article>
+</Base>
+<style>
+  .legal { padding: 5rem 0 6rem; max-width: 680px; }
+  .legal p { opacity: 0.85; line-height: 1.7; margin-bottom: 1.2rem; }
+</style>

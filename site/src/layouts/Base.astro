@@ -1,0 +1,288 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  jsonLd?: object;
+}
+const { title, description, path = "/", jsonLd } = Astro.props as Props;
+const canonical = new URL(path, Astro.site).toString();
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ZionCompanyAI" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta name="robots" content="index, follow" />
+  <meta name="color-scheme" content="dark light" />
+
+  {jsonLd && (
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  )}
+</head>
+<body>
+  <a class="skip-link" href="#main">Pular para o conteúdo</a>
+  <header class="site-header">
+    <nav class="wrap">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true">Z</span>
+        <span>ZionCompanyAI</span>
+      </a>
+      <div class="nav-links">
+        <a href="/#fabrica">A fábrica</a>
+        <a href="/#portfolio">Portfólio</a>
+        <a href="/historia/">Bastidores</a>
+        <a href="/#consultoria" class="cta">Falar com a gente</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">Z</span>
+          <span>ZionCompanyAI</span>
+        </div>
+        <p class="muted">A fábrica de software agêntica do Grupo MBZSoluções.</p>
+      </div>
+      <div>
+        <h3>Portfólio</h3>
+        <ul class="footer-list">
+          <li><a href="https://zionecho.zioncompanyai.com.br" rel="noopener">ZionEcho ↗</a></li>
+          <li><a href="https://zsocialmedia.zioncompanyai.com.br" rel="noopener">ZSocialMedia / PULSE ↗</a></li>
+          <li><a href="https://zdailyscan.zioncompanyai.com.br" rel="noopener">ZdailyScan ↗</a></li>
+          <li><a href="https://zvideo.zioncompanyai.com.br" rel="noopener">ZVideo ↗</a></li>
+          <li><a href="https://mlpublishpro.zioncompanyai.com.br" rel="noopener">MLPublishPro ↗</a></li>
+          <li><a href="https://picsyncpro.zioncompanyai.com.br" rel="noopener">PicSyncPro ↗</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Empresa</h3>
+        <ul class="footer-list">
+          <li><a href="/historia/">A história do Mission Control</a></li>
+          <li><a href="mailto:contato@mbzsolucoes.com.br">contato@mbzsolucoes.com.br</a></li>
+          <li><a href="/terms/">Termos</a></li>
+          <li><a href="/privacy/">Privacidade</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wrap footer-bottom muted">
+      <span>Grupo MBZSoluções · ZionCompanyAI</span>
+      <span>Construído por uma fábrica de agentes de IA. Curado por humanos.</span>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style is:global>
+  :root {
+    --ink: #0C1315;
+    --panel: #141D20;
+    --panel2: #1B2629;
+    --bone: #E9EEEC;
+    --teal: #4FD6C3;
+    --amber: #EFB454;
+    --border: rgba(233, 238, 236, 0.10);
+    color-scheme: dark;
+  }
+
+  :root[data-theme="light"] {
+    --ink: #F6F7F5;
+    --panel: #FFFFFF;
+    --panel2: #EEF2F0;
+    --bone: #0C1315;
+    --border: rgba(12, 19, 21, 0.10);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --ink: #F6F7F5;
+      --panel: #FFFFFF;
+      --panel2: #EEF2F0;
+      --bone: #0C1315;
+      --border: rgba(12, 19, 21, 0.10);
+      color-scheme: light;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--bone);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--amber);
+    color: var(--ink);
+    padding: 0.75rem 1rem;
+    z-index: 100;
+  }
+  .skip-link:focus { left: 1rem; top: 1rem; }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--ink) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .site-header nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.5rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--bone);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    background: var(--teal);
+    color: var(--ink);
+    font-family: ui-monospace, monospace;
+    font-weight: 800;
+    border-radius: 4px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.94rem;
+  }
+  .nav-links a {
+    color: var(--bone);
+    opacity: 0.82;
+    text-decoration: none;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--teal); }
+  .nav-links a.cta {
+    opacity: 1;
+    background: var(--amber);
+    color: var(--ink);
+    padding: 0.5rem 0.9rem;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .nav-links a.cta:hover { color: var(--ink); filter: brightness(1.08); }
+
+  h1, h2, h3, h4 {
+    font-weight: 820;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0 0 0.6em;
+  }
+
+  a { color: var(--teal); }
+
+  .muted { color: var(--bone); opacity: 0.62; }
+
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.9rem;
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 6rem;
+    padding: 3.5rem 0 2rem;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 2.5rem;
+  }
+  .footer-grid h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--teal);
+    margin-bottom: 0.9rem;
+  }
+  .footer-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
+  .footer-list a { color: var(--bone); opacity: 0.82; text-decoration: none; font-size: 0.94rem; }
+  .footer-list a:hover { opacity: 1; color: var(--teal); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 780px) {
+    .nav-links { gap: 0.9rem; font-size: 0.86rem; }
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+</style>

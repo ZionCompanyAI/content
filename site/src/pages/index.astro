@@ -1,0 +1,306 @@
+---
+import Base from "../layouts/Base.astro";
+
+const title = "ZionCompanyAI — a fábrica de software agêntica do Grupo MBZSoluções";
+const description =
+  "Construímos, escalamos e operamos software com um ecossistema de agentes de IA autônomos — 24×7, com humanos no comando das decisões. Motor: Mission Control.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ZionCompanyAI",
+  alternateName: "Grupo MBZSoluções",
+  url: "https://zioncompanyai.com.br",
+  description,
+  parentOrganization: {
+    "@type": "Organization",
+    name: "Grupo MBZSoluções",
+  },
+  knowsAbout: [
+    "Agentic software engineering",
+    "AI orchestration",
+    "Autonomous software delivery",
+    "Spec-driven development",
+  ],
+  makesOffer: [
+    { "@type": "Offer", itemOffered: { "@type": "SoftwareApplication", name: "ZionEcho" } },
+    { "@type": "Offer", itemOffered: { "@type": "SoftwareApplication", name: "ZSocialMedia / PULSE" } },
+    { "@type": "Offer", itemOffered: { "@type": "SoftwareApplication", name: "ZdailyScan" } },
+    { "@type": "Offer", itemOffered: { "@type": "SoftwareApplication", name: "ZVideo" } },
+    { "@type": "Offer", itemOffered: { "@type": "SoftwareApplication", name: "MLPublishPro" } },
+    { "@type": "Offer", itemOffered: { "@type": "SoftwareApplication", name: "PicSyncPro" } },
+    { "@type": "Offer", itemOffered: { "@type": "SoftwareApplication", name: "ParadigmaBot" } },
+  ],
+  email: "mailto:contato@mbzsolucoes.com.br",
+};
+
+const portfolio = [
+  { name: "ZionEcho", desc: "Automação de social media (SaaS) — agendamento e publicação inteligente.", url: "https://zionecho.zioncompanyai.com.br", anchor: true },
+  { name: "ZSocialMedia / PULSE", desc: "Motor de geração e curadoria de conteúdo para redes sociais.", url: "https://zsocialmedia.zioncompanyai.com.br" },
+  { name: "ZdailyScan", desc: "Radar diário de oportunidades de importação, com scoring de viabilidade.", url: "https://zdailyscan.zioncompanyai.com.br" },
+  { name: "ZVideo", desc: "Geração e automação de vídeo.", url: "https://zvideo.zioncompanyai.com.br" },
+  { name: "MLPublishPro", desc: "Publicação assistida de anúncios em marketplace.", url: "https://mlpublishpro.zioncompanyai.com.br" },
+  { name: "PicSyncPro", desc: "Automação de imagens de catálogo.", url: "https://picsyncpro.zioncompanyai.com.br" },
+  { name: "ParadigmaBot", desc: "Automação de estratégias quantitativas.", url: "https://paradigmabot-production.up.railway.app" },
+];
+
+const specs = [
+  { id: "FLEET-01", title: "Agentes especializados", body: "Arquitetura, desenvolvimento, revisão de código e operações — cada agente com papel claro, sem sobreposição." },
+  { id: "A2A-02", title: "Comunicação agente-a-agente", body: "Barramento durável em tempo real. Agentes conversam, delegam e debatem decisões técnicas — nenhuma mensagem se perde." },
+  { id: "GATE-03", title: "Pipeline da issue ao merge", body: "Código orientado por especificação e testes-oráculo. Gate de qualidade (lint + testes) roda antes do PR, não depois." },
+  { id: "HEAL-04", title: "Auto-cura e observabilidade", body: "Sensores detectam degradação e disparam correção antes do impacto — sem esperar alguém notar." },
+  { id: "MEM-05", title: "Memória durável", body: "Cada agente preserva contexto e lições. Conhecimento é versionado, não esquecido a cada sessão." },
+];
+---
+<Base title={title} description={description} path="/" jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap">
+      <p class="kicker">Grupo MBZSoluções · Fábrica de software agêntica</p>
+      <h1>A mão de obra que constrói nossos produtos é um ecossistema de agentes de IA — não uma equipe de plantão.</h1>
+      <p class="lede">
+        Projetamos, construímos e operamos software com agentes especializados que
+        implementam, revisam, testam e fazem deploy de ponta a ponta. O princípio que
+        governa tudo: <strong>autonomia onde é seguro, humano onde é decisivo.</strong>
+      </p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#consultoria">Falar com a gente</a>
+        <a class="btn-ghost" href="/historia/">Ler os bastidores do Mission Control →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="ledger wrap" aria-label="Números reais da operação">
+    <div class="ledger-cell ledger-big reveal">
+      <span class="mono ledger-num">35 dias</span>
+      <span class="ledger-label">do primeiro commit do Mission Control à primeira madrugada 100% autônoma — sem editar, sem arredondar.</span>
+    </div>
+    <div class="ledger-cell reveal">
+      <span class="mono ledger-num">4 PRs</span>
+      <span class="ledger-label">implementados, revisados e mergeados numa única madrugada, sem humano acordado (sessão s67).</span>
+    </div>
+    <div class="ledger-cell reveal">
+      <span class="mono ledger-num">7</span>
+      <span class="ledger-label">produtos SaaS ativos no portfólio, fabricados pelo mesmo motor.</span>
+    </div>
+    <div class="ledger-cell reveal">
+      <span class="mono ledger-num">20–45 min</span>
+      <span class="ledger-label">do pedido em linguagem natural no chat até a feature em produção.</span>
+    </div>
+  </section>
+
+  <section id="fabrica" class="section wrap">
+    <p class="kicker">01 · A fábrica</p>
+    <h2>O Mission Control é o motor. Ele não para.</h2>
+    <p class="section-lede">
+      No coração da ZionCompanyAI está o <strong>Mission Control</strong> — o orquestrador
+      onde os agentes colaboram de ponta a ponta, da issue ao deploy. Cada característica
+      abaixo é comportamento em produção, não roadmap.
+    </p>
+    <ul class="spec-list">
+      {specs.map((s) => (
+        <li class="reveal">
+          <span class="spec-id mono">{s.id}</span>
+          <div>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <p class="callout">
+      <a href="/historia/">Como isso ficou real, com bugs, timeouts e a noite em que a máquina se coordenou sozinha →</a>
+    </p>
+  </section>
+
+  <section id="portfolio" class="section wrap">
+    <p class="kicker">02 · O portfólio</p>
+    <h2>Produtos fabricados pela Zion, vendáveis sozinhos.</h2>
+    <p class="section-lede">
+      Soluções SaaS construídas pela fábrica e mantidas no portfólio do Grupo MBZSoluções —
+      cada uma com seu próprio mercado.
+    </p>
+    <div class="portfolio-grid">
+      {portfolio.map((p, i) => (
+        <a class:list={["portfolio-card", { anchor: p.anchor }, "reveal"]} href={p.url} target="_blank" rel="noopener">
+          <span class="portfolio-name">{p.name}</span>
+          <span class="portfolio-desc">{p.desc}</span>
+          <span class="portfolio-link mono">visitar ↗</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="ecommerce" class="section wrap">
+    <p class="kicker">03 · Prova de campo</p>
+    <h2>Usamos o que construímos.</h2>
+    <p class="section-lede">
+      A <strong>Loja HI Select</strong> é ao mesmo tempo um negócio de varejo real e o case
+      de quem opera com o que a fábrica produz — fulfillment automatizado, atendimento por
+      IA e catálogo sincronizado, no dia a dia, não numa demo.
+    </p>
+  </section>
+
+  <section id="consultoria" class="section wrap cta-section">
+    <p class="kicker">04 · Trabalhe com a gente</p>
+    <h2>Quer levar esse motor para dentro da sua operação?</h2>
+    <p class="section-lede">
+      Falamos sobre consultoria de engenharia agêntica, automação de pipeline de
+      desenvolvimento e produtos sob medida fabricados pelo mesmo processo que constrói
+      o nosso próprio portfólio.
+    </p>
+    <a class="btn-primary" href="mailto:contato@mbzsolucoes.com.br">contato@mbzsolucoes.com.br</a>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding: 6.5rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 4.4vw, 3.4rem);
+    max-width: 20ch;
+    margin-bottom: 1.1rem;
+  }
+  .lede {
+    max-width: 62ch;
+    font-size: 1.15rem;
+    opacity: 0.86;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+    margin-top: 2.2rem;
+  }
+  .btn-primary {
+    background: var(--amber);
+    color: var(--ink);
+    font-weight: 700;
+    padding: 0.85rem 1.4rem;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-ghost {
+    color: var(--bone);
+    text-decoration: none;
+    padding: 0.85rem 0.2rem;
+    opacity: 0.85;
+    border-bottom: 1px solid var(--border);
+  }
+  .btn-ghost:hover { opacity: 1; color: var(--teal); }
+
+  .ledger {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin: 3.5rem auto;
+  }
+  .ledger-cell {
+    background: var(--panel);
+    padding: 2rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .ledger-big { background: var(--panel2); }
+  .ledger-num { font-size: 2rem; font-weight: 800; color: var(--teal); }
+  .ledger-label { font-size: 0.88rem; opacity: 0.75; }
+
+  .section { padding: 4.5rem 0; }
+  .section-lede { max-width: 66ch; opacity: 0.82; font-size: 1.05rem; margin-bottom: 2.2rem; }
+
+  .spec-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .spec-list li {
+    background: var(--ink);
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 1.6rem;
+    align-items: start;
+  }
+  .spec-id { color: var(--amber); font-size: 0.85rem; padding-top: 0.2rem; }
+  .spec-list h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
+  .spec-list p { margin: 0; opacity: 0.78; font-size: 0.95rem; }
+
+  .callout { margin-top: 2rem; }
+  .callout a { font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--teal); }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .portfolio-card {
+    background: var(--panel);
+    color: var(--bone);
+    text-decoration: none;
+    padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-height: 9rem;
+  }
+  .portfolio-card.anchor {
+    grid-column: span 2;
+    grid-row: span 2;
+    background: var(--panel2);
+    min-height: 18rem;
+    justify-content: flex-end;
+  }
+  .portfolio-card.anchor .portfolio-name { font-size: 1.6rem; color: var(--teal); }
+  .portfolio-name { font-weight: 700; font-size: 1.05rem; }
+  .portfolio-desc { font-size: 0.9rem; opacity: 0.72; }
+  .portfolio-link { font-size: 0.8rem; color: var(--teal); opacity: 0.8; margin-top: auto; }
+  .portfolio-card:hover { background: var(--panel2); }
+
+  .cta-section { border-top: 1px solid var(--border); }
+
+  .reveal { opacity: 1; transform: none; transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.js-hidden { opacity: 0; transform: translateY(14px); }
+
+  @media (max-width: 900px) {
+    .ledger { grid-template-columns: 1fr 1fr; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .portfolio-card.anchor { grid-column: span 2; grid-row: span 1; min-height: 10rem; }
+    .spec-list li { grid-template-columns: 1fr; gap: 0.4rem; }
+  }
+  @media (max-width: 600px) {
+    .ledger { grid-template-columns: 1fr; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .portfolio-card.anchor { grid-column: span 1; }
+  }
+</style>
+
+<script>
+  // Progressive-enhancement reveal — content is fully present in the HTML
+  // either way (no-JS visitors and crawlers see everything, unhidden).
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const items = document.querySelectorAll<HTMLElement>(".reveal");
+    items.forEach((el) => el.classList.add("js-hidden"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove("js-hidden");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    items.forEach((el) => io.observe(el));
+  }
+</script>
